@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Request</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<script>
+    // protect page
+    if (localStorage.getItem("userRole") !== "employee") {
+        window.location.href = "login.html";
+    }
+</script>
+
+<div class="signup-container">
+    <h2>Create Request</h2>
+    <p class="subtitle">Submit for approval</p>
+
+    <form onsubmit="submitRequest(event)">
+        <div class="input-group">
+            <select id="type" required>
+                <option value="" disabled selected></option>
+                <option>Leave</option>
+                <option>Expense</option>
+                <option>Document</option>
+            </select>
+            <label>Request Type</label>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="title" required>
+            <label>Title</label>
+        </div>
+
+        <div class="input-group">
+            <textarea id="description" rows="4" required></textarea>
+            <label>Description</label>
+        </div>
+
+        <button type="submit">Submit Request</button>
+    </form>
+
+    <p class="switch-text">
+        <a href="employee-dashboard.html">← Back to Dashboard</a>
+    </p>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Digital Approval Workflow</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="signup-container">
+    <h2>Login</h2>
+    <p class="subtitle">Welcome back</p>
+
+    <form onsubmit="login(event)">
+        <div class="input-group">
+            <input type="email" id="email" required>
+            <label>Email</label>
+        </div>
+
+        <div class="input-group">
+            <input type="password" id="password" required>
+            <label>Password</label>
+        </div>
+
+        <div class="input-group">
+            <select id="role" required>
+                <option value="" disabled selected></option>
+                <option value="employee">Employee</option>
+                <option value="manager">Manager</option>
+            </select>
+            <label>Role</label>
+        </div>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <p class="switch-text">
+        Don’t have an account?
+        <a href="signup.html">Sign up</a>
+    </p>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

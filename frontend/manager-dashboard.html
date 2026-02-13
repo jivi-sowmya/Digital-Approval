@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manager Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<script>
+    if (localStorage.getItem("userRole") !== "manager") {
+        window.location.href = "login.html";
+    }
+</script>
+
+<header class="navbar">
+    <div class="logo">ApprovalFlow</div>
+    <div class="nav-right">
+        <span>🔔</span>
+        <span>Manager</span>
+        <button onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <a class="active" href="manager-dashboard.html">📊 Dashboard</a>
+        <a href="manager-approval.html">✅ Approvals</a>
+    </aside>
+
+    <main class="content">
+        <h1>Manager Dashboard</h1>
+        <p class="subtitle">Overview of employee requests</p>
+
+        <!-- ONLY STATS -->
+        <div class="cards">
+            <div class="card">
+                <h3>Total Requests</h3>
+                <p id="m-total">0</p>
+            </div>
+
+            <div class="card pending">
+                <h3>Pending</h3>
+                <p id="m-pending">0</p>
+            </div>
+
+            <div class="card approved">
+                <h3>Approved</h3>
+                <p id="m-approved">0</p>
+            </div>
+
+            <div class="card rejected">
+                <h3>Rejected</h3>
+                <p id="m-rejected">0</p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="js/script.js"></script>
+<script>
+    loadManagerDashboard(); // ONLY stats
+</script>
+
+</body>
+</html>
+

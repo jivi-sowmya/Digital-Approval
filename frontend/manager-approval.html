@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manager Approvals</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<script>
+if (localStorage.getItem("userRole") !== "manager") {
+    window.location.href = "login.html";
+}
+</script>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="logo">ApprovalFlow</div>
+    <div class="nav-right">
+        <span>🔔</span>
+        <span>Manager</span>
+        <button onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <a href="manager-dashboard.html">📊 Dashboard</a>
+    <a class="active" href="manager-approvals.html">✅ Approvals</a>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="content">
+
+<h1>Pending Approvals</h1>
+<p class="subtitle">Approve or reject employee requests</p>
+
+<div id="managerRequestList" class="request-list"></div>
+
+<h2 style="margin-top:40px;">History</h2>
+<div id="historyList"></div>
+
+</main>
+</div>
+
+<!-- ================= DRAWER ================= -->
+
+<div id="drawerOverlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+
+<div id="detailsDrawer" class="drawer">
+
+<div class="drawer-header">
+<h2>Request Details</h2>
+<span class="close-btn" onclick="closeDrawer()">✕</span>
+</div>
+
+<div id="drawerContent"></div>
+
+</div>
+
+<script src="js/script.js"></script>
+
+<script>
+loadManagerApprovals();
+</script>
+
+</body>
+</html>
+
+
+

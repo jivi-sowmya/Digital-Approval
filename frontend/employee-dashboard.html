@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<script>
+    // protect page
+    if (localStorage.getItem("userRole") !== "employee") {
+        window.location.href = "login.html";
+    }
+</script>
+
+<!-- TOP NAVBAR -->
+<header class="navbar">
+    <div class="logo">ApprovalFlow</div>
+    <div class="nav-right">
+        <span class="bell">🔔</span>
+        <span class="user">Employee</span>
+        <button onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<!-- MAIN LAYOUT -->
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <a class="active" href="employee-dashboard.html">🏠 Dashboard</a>
+        <a href="create-request.html">➕ Create Request</a>
+        <a href="my-requests.html">📄 My Requests</a>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+        <h1>Dashboard</h1>
+        <p class="subtitle">Overview of your requests</p>
+
+        <!-- STATS CARDS -->
+        <div class="cards">
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="icon">📊</span>
+                    <h3>Total Requests</h3>
+                </div>
+                <p id="total">0</p>
+            </div>
+
+            <div class="card pending">
+                <div class="card-header">
+                    <span class="icon">⏳</span>
+                    <h3>Pending</h3>
+                </div>
+                <p id="pending">0</p>
+            </div>
+
+            <div class="card approved">
+                <div class="card-header">
+                    <span class="icon">✅</span>
+                    <h3>Approved</h3>
+                </div>
+                <p id="approved">0</p>
+            </div>
+
+            <div class="card rejected">
+                <div class="card-header">
+                    <span class="icon">❌</span>
+                    <h3>Rejected</h3>
+                </div>
+                <p id="rejected">0</p>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script src="js/script.js"></script>
+<script>
+    loadDashboardStats();
+</script>
+</body>
+</html>
+
+
