@@ -3,16 +3,19 @@ const { createUsersTableQuery } = require("../models/User");
 const { createRequestsTableQuery } = require("../models/Request");
 
 const dbName = process.env.DB_NAME;
-const baseConfig = {
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT || 3306),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  ssl: {
-    rejectUnauthorized: false
-  },
-  connectTimeout: 10000
-};
+const baseConfig = process.env.MYSQL_PUBLIC_URL
+  ? {
+      uri: process.env.MYSQL_PUBLIC_URL,
+      ssl: { rejectUnauthorized: false }
+    }
+  : {
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT || 3306),
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      ssl: { rejectUnauthorized: false },
+      connectTimeout: 10000
+    };
 const pool = mysql.createPool({
   ...baseConfig,
   database: dbName,
