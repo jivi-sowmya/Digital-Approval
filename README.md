@@ -52,8 +52,39 @@ The backend serves the production frontend from `frontend-react/dist` after the 
 
 ## Deployment
 
-- `render.yaml` defines a Render web service for the combined Express + React build
+- Backend deploys to Render using [render.yaml](c:\Users\jivis\OneDrive\Desktop\Digital Approval Workflow\render.yaml)
+- Frontend deploys to Vercel using [vercel.json](c:\Users\jivis\OneDrive\Desktop\Digital Approval Workflow\frontend-react\vercel.json)
 - `.github/workflows/ci.yml` runs backend tests and frontend build on push and pull request
+
+### Render Backend
+
+- Service root: `backend`
+- Set backend env vars:
+- `DB_HOST`
+- `DB_PORT`
+- `DB_USER`
+- `DB_PASSWORD`
+- `DB_NAME`
+- `JWT_SECRET`
+- `CORS_ORIGIN`
+
+`CORS_ORIGIN` should be your Vercel frontend URL, for example:
+
+```text
+https://digital-approval-workflow.vercel.app
+```
+
+### Vercel Frontend
+
+- Project root: `frontend-react`
+- Framework preset: `Vite`
+- Build command: `npm run build`
+- Output directory: `dist`
+- Set frontend env var:
+
+```text
+VITE_API_URL=https://your-render-backend.onrender.com
+```
 
 ## Environment Variables
 
@@ -65,6 +96,7 @@ Backend requires:
 - `DB_PASSWORD`
 - `DB_NAME`
 - `JWT_SECRET`
+- `CORS_ORIGIN`
 
 Frontend optional variable:
 

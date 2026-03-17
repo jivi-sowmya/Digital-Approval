@@ -1,15 +1,31 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const fs = require("fs");
 require("dotenv").config();
 const { ensureDatabase, testConnection, initializeDatabase } = require("./config/db");
 
 const app = express();
 const frontendDistPath = path.join(__dirname, "..", "frontend-react", "dist");
 const swaggerPath = path.join(__dirname, "docs", "swagger.json");
+const frontendIndexPath = path.join(frontendDistPath, "index.html");
+const allowedOrigins = String(process.env.CORS_ORIGIN || process.env.FRONTEND_ORIGIN || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 /* ================= MIDDLEWARE ================= */
-app.use(cors());
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("CORS origin not allowed"));
+    }
+  })
+);
 app.use(express.json({ limit: "2mb" }));
 
 app.use((req, res, next) => {
@@ -37,7 +53,9 @@ app.use((req, res, next) => {
 /* ================= SERVE FRONTEND ================= */
 
 app.use("/api/docs", express.static(path.join(__dirname, "docs")));
-app.use(express.static(frontendDistPath));
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+}
 
 /* ================= API ROUTES ================= */
 
@@ -53,7 +71,16 @@ app.get("/api/health", (_req, res) => {
 /* ================= DEFAULT ROUTE ================= */
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(frontendDistPath, "index.html"));
+  if (fs.existsSync(frontendIndexPath)) {
+    return res.sendFile(frontendIndexPath);
+  }
+
+  return res.json({
+    service: "digital-approval-backend",
+    status: "running",
+    docs: "/api/docs/",
+    health: "/api/health"
+  });
 });
 
 app.get("/api/docs/swagger.json", (_req, res) => {
@@ -65,7 +92,11 @@ app.get("*", (req, res, next) => {
     return next();
   }
 
-  return res.sendFile(path.join(frontendDistPath, "index.html"));
+  if (fs.existsSync(frontendIndexPath)) {
+    return res.sendFile(frontendIndexPath);
+  }
+
+  return res.status(404).json({ error: "Route not found" });
 });
 
 /* ================= START SERVER ================= */

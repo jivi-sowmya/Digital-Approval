@@ -1,10 +1,10 @@
 services:
   - type: web
-    name: digital-approval-workflow
+    name: digital-approval-backend
     env: node
-    rootDir: .
-    buildCommand: npm install --prefix backend && npm install --prefix frontend-react && npm run build --prefix frontend-react
-    startCommand: npm start --prefix backend
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
     envVars:
       - key: NODE_VERSION
         value: 20
@@ -19,4 +19,6 @@ services:
       - key: DB_NAME
         sync: false
       - key: JWT_SECRET
+        sync: false
+      - key: CORS_ORIGIN
         sync: false
