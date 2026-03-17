@@ -7,9 +7,12 @@ const baseConfig = {
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT || 3306),
   user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD
+  password: process.env.DB_PASSWORD,
+  ssl: {
+    rejectUnauthorized: false
+  },
+  connectTimeout: 10000
 };
-
 const pool = mysql.createPool({
   ...baseConfig,
   database: dbName,
@@ -31,6 +34,7 @@ async function ensureDatabase() {
     await connection.end();
   }
 }
+
 
 async function testConnection() {
   const connection = await pool.getConnection();
