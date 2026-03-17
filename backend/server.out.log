@@ -1,0 +1,18 @@
+
+> digital-approval-backend@1.0.0 start
+> node server.js
+
+[dotenv@17.3.1] injecting env (3) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+✅ Server running at http://localhost:5000
+✅ MongoDB Connected
+[2026-03-04T15:07:07.916Z] GET /api/requests
+[2026-03-04T15:07:07.931Z] GET /api/requests
+[2026-03-04T15:07:07.942Z] GET /api/requests
+[2026-03-04T15:07:16.573Z] GET /api/requests
+[2026-03-04T15:07:16.588Z] GET /api/requests
+[2026-03-04T15:07:16.604Z] GET /api/requests
+[2026-03-04T15:07:16.618Z] GET /api/requests
+[2026-03-04T15:07:16.641Z] GET /api/requests
+[2026-03-04T15:07:16.648Z] GET /api/requests
+[2026-03-04T15:07:16.654Z] GET /api/requests
+[2026-03-04T15:07:16.661Z] GET /api/requests

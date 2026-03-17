@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Digital Approval Workflow API Docs</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f7fb;
+        color: #10203a;
+      }
+      main {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 40px 20px 60px;
+      }
+      .hero, .card {
+        background: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 14px 34px rgba(16, 32, 58, 0.12);
+        padding: 24px;
+        margin-bottom: 18px;
+      }
+      h1, h2 {
+        margin-top: 0;
+      }
+      code {
+        background: #eef3fb;
+        border-radius: 8px;
+        padding: 2px 6px;
+      }
+      a {
+        color: #1d4ed8;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 10px;
+        border-bottom: 1px solid #d8e2f0;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <h1>Digital Approval Workflow API</h1>
+        <p>Phase 3 API reference for auth, request creation, approvals, filtering, and pagination.</p>
+        <p>Swagger spec: <a href="/api/docs/swagger.json">/api/docs/swagger.json</a></p>
+        <p>Postman collection: <code>postman/Digital_Approval_Workflow_Phase2.postman_collection.json</code></p>
+      </section>
+
+      <section class="card">
+        <h2>Core Endpoints</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Endpoint</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>POST</td>
+              <td><code>/api/auth/signup</code></td>
+              <td>Create employee or manager account</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td><code>/api/auth/login</code></td>
+              <td>Authenticate and return JWT token</td>
+            </tr>
+            <tr>
+              <td>POST</td>
+              <td><code>/api/requests/create</code></td>
+              <td>Create employee request</td>
+            </tr>
+            <tr>
+              <td>GET</td>
+              <td><code>/api/requests?advanced=true&amp;search=loan&amp;status=pending&amp;page=1&amp;pageSize=6</code></td>
+              <td>Manager search, filtering, and pagination</td>
+            </tr>
+            <tr>
+              <td>PATCH</td>
+              <td><code>/api/requests/:id/status</code></td>
+              <td>Approve or reject request</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>

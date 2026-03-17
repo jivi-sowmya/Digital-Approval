@@ -1,0 +1,133 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Digital Approval Workflow API",
+    "version": "3.0.0",
+    "description": "API documentation for authentication, request creation, manager approvals, pagination, and filtering."
+  },
+  "servers": [
+    {
+      "url": "/api"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "AuthRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string", "minLength": 6 }
+        }
+      },
+      "SignupRequest": {
+        "allOf": [
+          { "$ref": "#/components/schemas/AuthRequest" },
+          {
+            "type": "object",
+            "required": ["name", "role"],
+            "properties": {
+              "name": { "type": "string" },
+              "role": { "type": "string", "enum": ["employee", "manager"] }
+            }
+          }
+        ]
+      },
+      "Request": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "employeeName": { "type": "string" },
+          "employeeEmail": { "type": "string" },
+          "type": { "type": "string" },
+          "status": { "type": "string", "enum": ["Pending", "Approved", "Rejected"] },
+          "managerComment": { "type": "string" },
+          "createdAt": { "type": "string" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "summary": "Register a new employee or manager",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SignupRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Signup successful" },
+          "409": { "description": "Email already registered" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Authenticate a user and return JWT",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AuthRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login successful" },
+          "401": { "description": "Invalid credentials" }
+        }
+      }
+    },
+    "/requests": {
+      "get": {
+        "summary": "Get requests for dashboard or paginated management view",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "advanced", "in": "query", "schema": { "type": "string", "enum": ["true"] } },
+          { "name": "search", "in": "query", "schema": { "type": "string" } },
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["pending", "approved", "rejected"] } },
+          { "name": "type", "in": "query", "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "minimum": 1 } },
+          { "name": "pageSize", "in": "query", "schema": { "type": "integer", "minimum": 1, "maximum": 20 } }
+        ],
+        "responses": {
+          "200": { "description": "Array response for dashboard calls or object response for advanced mode" }
+        }
+      }
+    },
+    "/requests/create": {
+      "post": {
+        "summary": "Create a new request",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Request created" }
+        }
+      }
+    },
+    "/requests/{id}/status": {
+      "patch": {
+        "summary": "Approve or reject a request",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Request updated" }
+        }
+      }
+    }
+  }
+}
