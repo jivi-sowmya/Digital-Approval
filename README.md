@@ -1,17 +1,97 @@
 # Digital Approval Workflow
 
-Phase 3 full-stack web application for employee request submission and manager approval workflows.
+Digital Approval Workflow is a full-stack web application for managing employee approval requests. Employees can create and track requests, while managers can review, comment, approve, reject, and monitor request history through a responsive dashboard.
 
-## Phase 3 Coverage
+## Project Overview
 
-- UI/UX refinement with responsive React pages, animated cards, loaders, and toast feedback
-- Advanced logic with manager-side search, status/type filters, pagination, and document preview support
-- Performance improvements with backend query indexes, lazy-loaded routes, and manual frontend chunk splitting
-- Testing with backend unit tests using Node's built-in test runner
-- Deployment-ready setup with Vercel frontend config, Render backend config, and GitHub Actions CI
-- Documentation via Swagger spec, API docs page, Postman collection, and project report
+This project was developed as a Phase 3 web development submission with a focus on:
 
-## Run Locally
+- polished and responsive UI/UX
+- advanced request handling logic
+- performance improvements
+- testing and reliability
+- live deployment
+- project documentation
+
+## Tech Stack
+
+- Frontend: React, Vite, React Router, Axios
+- Backend: Node.js, Express
+- Database: MySQL
+- Authentication: JWT
+- API Documentation: Swagger JSON and Postman collection
+- Deployment: Vercel (frontend) and Render (backend)
+
+## Core Features
+
+- Employee signup and login
+- Manager signup and login
+- Role-based dashboard access
+- Create approval requests for:
+- `Leave`
+- `Purchase`
+- `Expense`
+- `Loan`
+- `Work From Home`
+- View submitted requests and approval status
+- Manager comments on requests
+- Manager approval, rejection, and deletion
+- Search, filter, and pagination for manager approvals
+- Document preview support for uploaded files
+- Notification UI for employee updates
+- Loaders and toast notifications for better user feedback
+
+## UI/UX Highlights
+
+- Responsive layouts for desktop and mobile
+- Modern form styling and animated cards
+- Loaders for route and data states
+- Toast notifications for signup, login, and request actions
+- Smooth transitions for sections and request interactions
+
+## Advanced Logic
+
+- Manager-side search by title, description, employee name, and email
+- Filtering by request status and request type
+- Server-side pagination for approval management
+- Role-based authorization for employee and manager routes
+- Request document handling and preview
+
+## Performance and Testing
+
+- Indexed request and user table fields for faster queries
+- Frontend route lazy loading
+- Vendor chunk splitting with Vite
+- Backend unit tests for request query parsing and pagination logic
+
+## Project Structure
+
+```text
+Digital Approval Workflow/
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── docs/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── tests/
+│   ├── utils/
+│   └── server.js
+├── frontend-react/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── pages/
+│   │   └── services/
+│   └── package.json
+├── docs/
+├── postman/
+├── render.yaml
+└── README.md
+```
+
+## Local Setup
 
 ### Backend
 
@@ -19,6 +99,12 @@ Phase 3 full-stack web application for employee request submission and manager a
 cd backend
 npm install
 npm start
+```
+
+Backend runs on:
+
+```text
+http://localhost:5000
 ```
 
 ### Frontend
@@ -29,81 +115,85 @@ npm install
 npm run dev
 ```
 
-For a production frontend build:
-
-```powershell
-cd frontend-react
-npm run build
-```
-
-## Scripts
-
-### Backend
-
-- `npm start`
-- `npm test`
-
-### Frontend
-
-- `npm run dev`
-- `npm run build`
-- `npm run preview`
-
-## API Documentation
-
-- Local API docs page: `http://localhost:5000/api/docs/`
-- Swagger spec: `http://localhost:5000/api/docs/swagger.json`
-- Postman collection: [postman/Digital_Approval_Workflow_Phase2.postman_collection.json](c:\Users\jivis\OneDrive\Desktop\Digital Approval Workflow\postman\Digital_Approval_Workflow_Phase2.postman_collection.json)
-
-## Deployment
-
-- Backend deploys to Render using [render.yaml](c:\Users\jivis\OneDrive\Desktop\Digital Approval Workflow\render.yaml)
-- Frontend deploys to Vercel using [vercel.json](c:\Users\jivis\OneDrive\Desktop\Digital Approval Workflow\frontend-react\vercel.json)
-- `.github/workflows/ci.yml` runs backend tests and frontend build on push and pull request
-
-### Render Backend
-
-- Service root: `backend`
-- Set backend env vars:
-- `DB_HOST`
-- `DB_PORT`
-- `DB_USER`
-- `DB_PASSWORD`
-- `DB_NAME`
-- `JWT_SECRET`
-- `CORS_ORIGIN`
-
-`CORS_ORIGIN` should be your Vercel frontend URL, for example:
+Frontend runs on:
 
 ```text
-https://digital-approval-workflow.vercel.app
-```
-
-### Vercel Frontend
-
-- Project root: `frontend-react`
-- Framework preset: `Vite`
-- Build command: `npm run build`
-- Output directory: `dist`
-- Set frontend env var:
-
-```text
-VITE_API_URL=https://your-render-backend.onrender.com
+http://localhost:5173
 ```
 
 ## Environment Variables
 
-Backend requires:
+### Backend
 
-- `DB_HOST`
-- `DB_PORT`
-- `DB_USER`
-- `DB_PASSWORD`
-- `DB_NAME`
-- `JWT_SECRET`
-- `CORS_ORIGIN`
+Create `backend/.env` and configure:
 
-Frontend optional variable:
+```env
+DB_HOST=your_mysql_host
+DB_PORT=3306
+DB_USER=your_mysql_user
+DB_PASSWORD=your_mysql_password
+DB_NAME=your_database_name
+JWT_SECRET=your_secret_key
+CORS_ORIGIN=http://localhost:5173
+```
 
-- `VITE_API_URL`
+### Frontend
 
+Optional for deployed frontend:
+
+```env
+VITE_API_URL=https://your-backend-url.onrender.com
+```
+
+## API Endpoints
+
+### Authentication
+
+- `POST /api/auth/signup`
+- `POST /api/auth/login`
+
+### Requests
+
+- `POST /api/requests/create`
+- `GET /api/requests`
+- `GET /api/requests/:id`
+- `PATCH /api/requests/:id/status`
+- `PATCH /api/requests/:id/comment`
+- `DELETE /api/requests/:id`
+
+### Utility
+
+- `GET /api/health`
+- `GET /api/docs/`
+- `GET /api/docs/swagger.json`
+
+## Testing
+
+Run backend tests:
+
+```powershell
+cd backend
+npm test
+```
+
+## Deployment
+
+### Frontend
+
+- Live URL: `https://digital-approval-ktyt.vercel.app`
+
+### Backend
+
+- Live URL: `https://digital-approval-2.onrender.com`
+- Health check: `https://digital-approval-2.onrender.com/api/health`
+- API docs: `https://digital-approval-2.onrender.com/api/docs/`
+
+## Documentation Files
+
+- Project report: [docs/PROJECT_REPORT.md](c:\Users\jivis\OneDrive\Desktop\Digital Approval Workflow\docs\PROJECT_REPORT.md)
+- Swagger spec: [backend/docs/swagger.json](c:\Users\jivis\OneDrive\Desktop\Digital Approval Workflow\backend\docs\swagger.json)
+- Postman collection: [postman/Digital_Approval_Workflow_Phase2.postman_collection.json](c:\Users\jivis\OneDrive\Desktop\Digital Approval Workflow\postman\Digital_Approval_Workflow_Phase2.postman_collection.json)
+
+## Author
+
+- Jivi Sowmya
