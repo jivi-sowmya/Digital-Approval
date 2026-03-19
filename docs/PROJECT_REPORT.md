@@ -35,8 +35,8 @@ Digital Approval Workflow streamlines employee approval requests such as leave, 
 
 ### Production Readiness
 
-- Express serves built React app for SPA deployment
-- Render deployment descriptor
+- Vercel-ready frontend deployment setup
+- Render backend deployment descriptor
 - GitHub Actions CI pipeline for tests and production build verification
 
 ### Documentation and Viva Support
@@ -63,3 +63,4 @@ Digital Approval Workflow streamlines employee approval requests such as leave, 
 - Manager approval data now uses indexed, paginated queries instead of loading the whole table every time.
 - React routes are lazy loaded so the initial bundle is smaller and the document viewer is split into a separate chunk.
 - Phase 3 adds stronger documentation, testing, and deployment preparation around the existing workflow.
+- The current deployment split uses Vercel for the frontend and Render for the backend.

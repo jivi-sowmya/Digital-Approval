@@ -2,6 +2,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { pool } = require("../config/db");
 
+/* ================= HELPERS ================= */
+
 function normalizeRole(role) {
   return role === "manager" ? "manager" : "employee";
 }
@@ -10,9 +12,13 @@ function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
 }
 
+/* ================= SIGNUP ================= */
+
 exports.signup = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
+
+    console.log("Signup request:", { name, email, role }); // ✅ DEBUG
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: "Name, email and password are required" });
@@ -20,18 +26,22 @@ exports.signup = async (req, res) => {
 
     const normalizedEmail = String(email).trim().toLowerCase();
     const trimmedName = String(name).trim();
+
     if (!trimmedName || trimmedName.length > 255) {
       return res.status(400).json({ message: "Invalid name" });
     }
+
     if (!isValidEmail(normalizedEmail)) {
       return res.status(400).json({ message: "Invalid email format" });
     }
+
     if (String(password).length < 6) {
       return res.status(400).json({ message: "Password must be at least 6 characters" });
     }
 
     const normalizedRole = normalizeRole(role);
 
+    // Check existing user
     const [existingUsers] = await pool.execute(
       "SELECT id FROM users WHERE email = ? LIMIT 1",
       [normalizedEmail]
@@ -41,8 +51,10 @@ exports.signup = async (req, res) => {
       return res.status(409).json({ message: "Email already registered" });
     }
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Insert user
     const [result] = await pool.execute(
       "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
       [trimmedName, normalizedEmail, hashedPassword, normalizedRole]
@@ -57,23 +69,34 @@ exports.signup = async (req, res) => {
         role: normalizedRole
       }
     });
+
   } catch (error) {
-    return res.status(500).json({ message: "Signup failed", error: error.message });
+    console.error("Signup error FULL:", error); // ✅ VERY IMPORTANT
+    return res.status(500).json({
+      message: "Signup failed",
+      error: error.message
+    });
   }
 };
+
+/* ================= LOGIN ================= */
 
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    console.log("Login request:", email); // ✅ DEBUG
 
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password required" });
     }
 
     const normalizedEmail = String(email).trim().toLowerCase();
+
     if (!isValidEmail(normalizedEmail)) {
       return res.status(400).json({ message: "Invalid email format" });
     }
+
     const [rows] = await pool.execute(
       "SELECT id, name, email, password, role FROM users WHERE email = ? LIMIT 1",
       [normalizedEmail]
@@ -84,6 +107,7 @@ exports.login = async (req, res) => {
     }
 
     const user = rows[0];
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -110,7 +134,12 @@ exports.login = async (req, res) => {
         role: user.role
       }
     });
+
   } catch (error) {
-    return res.status(500).json({ message: "Login failed", error: error.message });
+    console.error("Login error FULL:", error); // ✅ VERY IMPORTANT
+    return res.status(500).json({
+      message: "Login failed",
+      error: error.message
+    });
   }
 };

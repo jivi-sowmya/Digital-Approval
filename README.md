@@ -8,7 +8,7 @@ Phase 3 full-stack web application for employee request submission and manager a
 - Advanced logic with manager-side search, status/type filters, pagination, and document preview support
 - Performance improvements with backend query indexes, lazy-loaded routes, and manual frontend chunk splitting
 - Testing with backend unit tests using Node's built-in test runner
-- Deployment-ready setup with SPA serving from Express, `render.yaml`, and GitHub Actions CI
+- Deployment-ready setup with Vercel frontend config, Render backend config, and GitHub Actions CI
 - Documentation via Swagger spec, API docs page, Postman collection, and project report
 
 ## Run Locally
@@ -26,10 +26,15 @@ npm start
 ```powershell
 cd frontend-react
 npm install
-npm run build
+npm run dev
 ```
 
-The backend serves the production frontend from `frontend-react/dist` after the frontend build is generated.
+For a production frontend build:
+
+```powershell
+cd frontend-react
+npm run build
+```
 
 ## Scripts
 

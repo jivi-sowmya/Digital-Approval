@@ -19,7 +19,7 @@ function resolveApiOrigin() {
 }
 
 const API = axios.create({
-  baseURL: `${resolveApiOrigin()}/api`,
+  baseURL: "https://digital-approval-2.onrender.com/api",
 });
 
 API.interceptors.request.use((config) => {

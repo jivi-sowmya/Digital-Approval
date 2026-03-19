@@ -3,19 +3,21 @@ const { createUsersTableQuery } = require("../models/User");
 const { createRequestsTableQuery } = require("../models/Request");
 
 const dbName = process.env.DB_NAME;
-const baseConfig = process.env.MYSQL_PUBLIC_URL
-  ? {
-      uri: process.env.MYSQL_PUBLIC_URL,
-      ssl: { rejectUnauthorized: false }
-    }
-  : {
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT || 3306),
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      ssl: { rejectUnauthorized: false },
-      connectTimeout: 10000
-    };
+const baseConfig = {
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT || 3306),
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  ssl: {
+    rejectUnauthorized: false
+  },
+  connectTimeout: 10000
+};
+
+console.log("ENV CHECK:");
+console.log("DB_HOST:", process.env.DB_HOST);
+console.log("DB_PORT:", process.env.DB_PORT);
+console.log("DB_USER:", process.env.DB_USER);
 const pool = mysql.createPool({
   ...baseConfig,
   database: dbName,
@@ -30,12 +32,10 @@ async function ensureDatabase() {
     throw new Error("DB_NAME is not configured");
   }
 
-  const connection = await mysql.createConnection(baseConfig);
-  try {
-    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${safeDbName}\``);
-  } finally {
-    await connection.end();
-  }
+  const connection = await mysql.createConnection({
+  ...baseConfig,
+  database: dbName
+});
 }
 
 
