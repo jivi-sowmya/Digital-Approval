@@ -1,6 +1,14 @@
 const { pool } = require("../config/db");
 const { buildRequestListQuery, getListOptions } = require("../utils/requestQuery");
 
+async function runStatement(sql, params = []) {
+  if (!Array.isArray(params) || params.length === 0) {
+    return pool.query(sql);
+  }
+
+  return pool.execute(sql, params);
+}
+
 function toDbStatus(status) {
   const value = String(status || "").toLowerCase();
   if (value === "approved") return "approved";
@@ -210,12 +218,12 @@ exports.getRequests = async (req, res) => {
       type: options.type
     });
 
-    const [[countRow], [rows]] = await Promise.all([
-      pool.execute(query.countSql, query.filters),
-      pool.execute(query.listSql, query.listParams)
+    const [[countRows], [rows]] = await Promise.all([
+      runStatement(query.countSql, query.filters),
+      runStatement(query.listSql, query.listParams)
     ]);
 
-    const total = Number(countRow?.total || 0);
+    const total = Number(countRows?.[0]?.total || 0);
 
     return res.json({
       items: rows.map(normalizeRequestRow),
