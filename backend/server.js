@@ -3,31 +3,25 @@ const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
 require("dotenv").config();
+
 const { ensureDatabase, testConnection, initializeDatabase } = require("./config/db");
 
 const app = express();
+
+/* ================= PATHS ================= */
 const frontendDistPath = path.join(__dirname, "..", "frontend-react", "dist");
 const swaggerPath = path.join(__dirname, "docs", "swagger.json");
 const frontendIndexPath = path.join(frontendDistPath, "index.html");
-const allowedOrigins = String(process.env.CORS_ORIGIN || process.env.FRONTEND_ORIGIN || "")
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
 
 /* ================= MIDDLEWARE ================= */
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
 
-      return callback(new Error("CORS origin not allowed"));
-    }
-  })
-);
+// ✅ FIXED CORS (ALLOW ALL — IMPORTANT FOR NOW)
+app.use(cors());
+
+// ✅ JSON parser
 app.use(express.json({ limit: "2mb" }));
 
+// ✅ Security headers
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "DENY");
@@ -37,6 +31,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// ✅ Logging
 app.use((req, res, next) => {
   const start = Date.now();
   res.on("finish", () => {
@@ -48,11 +43,10 @@ app.use((req, res, next) => {
   next();
 });
 
-/* ================= MYSQL CONNECTION ================= */
-
 /* ================= SERVE FRONTEND ================= */
 
 app.use("/api/docs", express.static(path.join(__dirname, "docs")));
+
 if (fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
 }
@@ -64,6 +58,8 @@ const requestRoutes = require("./routes/requestRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/requests", requestRoutes);
+
+// ✅ Health check
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
@@ -87,6 +83,7 @@ app.get("/api/docs/swagger.json", (_req, res) => {
   res.sendFile(swaggerPath);
 });
 
+// SPA fallback
 app.get("*", (req, res, next) => {
   if (req.path.startsWith("/api/")) {
     return next();
@@ -108,23 +105,24 @@ async function startServer() {
     await ensureDatabase();
     await testConnection();
     await initializeDatabase();
-    console.log("MySQL connected");
+
+    console.log("✅ MySQL connected");
 
     const server = app.listen(PORT, () => {
-      console.log(`Server running at http://localhost:${PORT}`);
+      console.log(`🚀 Server running at http://localhost:${PORT}`);
     });
 
     server.on("error", (error) => {
       if (error.code === "EADDRINUSE") {
-        console.error(`Port ${PORT} is already in use. Stop the existing process, then restart.`);
+        console.error(`❌ Port ${PORT} already in use`);
         process.exit(1);
       }
 
-      console.error("Server failed to start:", error.message);
+      console.error("❌ Server failed:", error.message);
       process.exit(1);
     });
   } catch (error) {
-    console.error("MySQL connection failed:", error.message);
+    console.error("❌ MySQL connection failed:", error.message);
     process.exit(1);
   }
 }
