@@ -70,6 +70,8 @@ function buildRequestListQuery({ role, userId, page, pageSize, search, status, t
 
   const whereClause = where.length ? `WHERE ${where.join(" AND ")}` : "";
   const offset = (page - 1) * pageSize;
+  const safeLimit = Number.isInteger(pageSize) && pageSize > 0 ? pageSize : 6;
+  const safeOffset = Number.isInteger(offset) && offset >= 0 ? offset : 0;
 
   return {
     whereClause,
@@ -80,9 +82,9 @@ function buildRequestListQuery({ role, userId, page, pageSize, search, status, t
       FROM requests
       ${whereClause}
       ORDER BY created_at DESC, id DESC
-      LIMIT ? OFFSET ?
+      LIMIT ${safeLimit} OFFSET ${safeOffset}
     `,
-    listParams: [...params, pageSize, offset]
+    listParams: params
   };
 }
 
