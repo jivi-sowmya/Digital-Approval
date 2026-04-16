@@ -2,11 +2,7 @@ const { pool } = require("../config/db");
 const { buildRequestListQuery, getListOptions } = require("../utils/requestQuery");
 
 async function runStatement(sql, params = []) {
-  if (!Array.isArray(params) || params.length === 0) {
-    return pool.query(sql);
-  }
-
-  return pool.execute(sql, params);
+  return pool.query(sql, Array.isArray(params) ? params : []);
 }
 
 function toDbStatus(status) {
@@ -240,8 +236,8 @@ exports.getRequests = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error("getRequests failed:", error.message);
-    return res.status(500).json({ error: "Internal server error" });
+    console.error("getRequests failed:", error);
+    return res.status(500).json({ error: error.message || "Internal server error" });
   }
 };
 

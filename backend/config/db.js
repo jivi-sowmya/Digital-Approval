@@ -3,21 +3,26 @@ const { createUsersTableQuery } = require("../models/User");
 const { createRequestsTableQuery } = require("../models/Request");
 
 const dbName = process.env.DB_NAME;
+
+// ✅ FORCE SSL (important for Aiven)
 const baseConfig = {
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT || 3306),
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
+  connectTimeout: 20000,
   ssl: {
     rejectUnauthorized: false
-  },
-  connectTimeout: 10000
+  }
 };
 
 console.log("ENV CHECK:");
 console.log("DB_HOST:", process.env.DB_HOST);
 console.log("DB_PORT:", process.env.DB_PORT);
 console.log("DB_USER:", process.env.DB_USER);
+console.log("SSL ENABLED ✅");
+
+// ✅ Create pool
 const pool = mysql.createPool({
   ...baseConfig,
   database: dbName,
@@ -26,6 +31,7 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
+// ✅ Ensure DB exists
 async function ensureDatabase() {
   const safeDbName = String(dbName || "").replace(/`/g, "");
   if (!safeDbName) {
@@ -33,21 +39,33 @@ async function ensureDatabase() {
   }
 
   const connection = await mysql.createConnection({
-  ...baseConfig,
-  database: dbName
-});
-}
+    ...baseConfig,
+    database: dbName,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
 
-
-async function testConnection() {
-  const connection = await pool.getConnection();
   try {
-    await connection.ping();
+    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${safeDbName}\``);
   } finally {
-    connection.release();
+    await connection.end();
   }
 }
 
+// ✅ Test connection
+async function testConnection() {
+  try {
+    const connection = await pool.getConnection();
+    await connection.ping();
+    connection.release();
+    console.log("✅ MySQL Connected Successfully");
+  } catch (err) {
+    console.error("❌ MySQL connection failed:", err.message);
+  }
+}
+
+// ✅ Initialize tables
 async function initializeDatabase() {
   await pool.execute(createUsersTableQuery);
   await pool.execute(createRequestsTableQuery);
